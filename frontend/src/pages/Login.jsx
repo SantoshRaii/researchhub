@@ -11,44 +11,38 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const res = await API.post("/auth/login", {
-        email,
-        password
-      });
-      login(res.data);
-      navigate("/dashboard");
-    } catch (err) {
-      alert(err.response.data.message);
-    }
+    const res = await API.post("/auth/login", { email, password });
+    login(res.data);
+    navigate("/dashboard");
   };
 
   return (
-    <div className="container">
-      <h2>Login</h2>
-
-      <form onSubmit={handleSubmit}>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="bg-white p-8 rounded shadow w-96">
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <form onSubmit={handleSubmit}>
         <input
+          className="w-full border p-2 mb-4"
           placeholder="Email"
-          value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <br /><br />
 
         <input
+          className="w-full border p-2 mb-4"
           type="password"
           placeholder="Password"
-          value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <br /><br />
 
-        <button type="submit">Login</button>
-      </form>
+        <button className="w-full bg-blue-600 text-white p-2 rounded" type="submit">
+          Login
+        </button>
+        </form>
 
-      <p>
-        New user? <Link to="/register">Register</Link>
-      </p>
+        <p className="mt-4 text-center">
+          New user? <Link to="/register" className="text-blue-600">Register</Link>
+        </p>
+      </div>
     </div>
   );
 };

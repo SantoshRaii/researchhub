@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../api/axios";
+import Navbar from "../components/Navbar";
 
 import {
   Chart as ChartJS,
@@ -25,23 +26,28 @@ ChartJS.register(
 const Analytics = () => {
   const [data, setData] = useState(null);
 
-  const fetchAnalytics = async () => {
-    const res = await API.get("/analytics/summary");
-    setData(res.data);
-  };
-
   useEffect(() => {
-    fetchAnalytics();
+    API.get("/analytics/summary")
+      .then((res) => setData(res.data))
+      .catch((err) => console.log(err));
   }, []);
 
-  if (!data) return <p>Loading...</p>;
+  if (!data) {
+    return (
+      <>
+        <Navbar />
+        <p className="p-10">Loading Analytics...</p>
+      </>
+    );
+  }
 
   const domainChart = {
     labels: Object.keys(data.domainCount),
     datasets: [
       {
         label: "Papers per Domain",
-        data: Object.values(data.domainCount)
+        data: Object.values(data.domainCount),
+        backgroundColor: "rgba(37,99,235,0.7)"
       }
     ]
   };
@@ -51,27 +57,65 @@ const Analytics = () => {
     datasets: [
       {
         label: "Papers per Stage",
-        data: Object.values(data.stageCount)
+        data: Object.values(data.stageCount),
+        backgroundColor: [
+          "#2563eb",
+          "#16a34a",
+          "#dc2626",
+          "#f59e0b",
+          "#9333ea"
+        ]
       }
     ]
   };
 
-  return (
-    <div style={{ padding: 40 }}>
-      <h2>Analytics</h2>
+return (
+  <>
+    <Navbar />
 
-      <p>Total Papers: {data.totalPapers}</p>
-      <p>Fully Read: {data.fullyRead}</p>
+    <div className="p-6">
 
-      <div style={{ width: 400 }}>
-        <Bar data={domainChart} />
+      <h2 className="text-xl font-bold mb-6">Analytics Dashboard</h2>
+
+      {/* Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {/* Bar Chart */}
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="font-semibold mb-2">Papers by Domain</h3>
+
+          <div style={{ height: "300px" }}>
+            <Bar
+              data={domainChart}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Pie Chart */}
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="font-semibold mb-2">Papers by Reading Stage</h3>
+
+          <div style={{ height: "300px" }}>
+            <Pie
+              data={stageChart}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false
+              }}
+            />
+          </div>
+        </div>
+
       </div>
 
-      <div style={{ width: 400, marginTop: 40 }}>
-        <Pie data={stageChart} />
-      </div>
     </div>
-  );
+  </>
+);
+
 };
 
 export default Analytics;

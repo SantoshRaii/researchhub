@@ -1,30 +1,23 @@
+import Navbar from "../components/Navbar";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
-const Dashboard = () => {
-  const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
+const Dashboard = () => {
+  const { user } = useContext(AuthContext);
 
   return (
     <>
-    <Navbar />
-    <div style={{ padding: 40 }}>
-    <h2>Dashboard</h2>
+      <Navbar />
 
-    <p>Welcome {user?.name}</p>
+      <div className="p-10">
+        <h2 className="text-2xl font-bold">Welcome, {user?.name}</h2>
 
-    <button onClick={handleLogout}>Logout</button>
-    <button onClick={() => navigate("/add-paper")}>Add Paper</button>
-    <button onClick={() => navigate("/library")}>Library</button>
-    <button onClick={() => navigate("/analytics")}>Analytics</button>
-
-    </div>
+        <div className="grid grid-cols-3 gap-6 mt-8">
+          <div className="bg-white p-6 shadow rounded">Add & Track Papers</div>
+          <div className="bg-white p-6 shadow rounded">Organize Library</div>
+          <div className="bg-white p-6 shadow rounded">View Analytics</div>
+        </div>
+      </div>
     </>
   );
 };

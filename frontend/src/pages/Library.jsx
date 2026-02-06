@@ -1,30 +1,27 @@
 import { useEffect, useState } from "react";
 import API from "../api/axios";
+import Navbar from "../components/Navbar";
 
 const Library = () => {
   const [papers, setPapers] = useState([]);
 
-  const fetchPapers = async () => {
-    const res = await API.get("/papers");
-    setPapers(res.data);
-  };
-
   useEffect(() => {
-    fetchPapers();
+    API.get("/papers").then((res) => setPapers(res.data));
   }, []);
 
   return (
-    <div style={{ padding: 40 }}>
-      <h2>Paper Library</h2>
-
-      {papers.map((p) => (
-        <div key={p._id}  className="card">
-          <h4>{p.title}</h4>
-          <p>{p.domain}</p>
-          <p>{p.readingStage}</p>
-        </div>
-      ))}
-    </div>
+    <>
+      <Navbar />
+      <div className="p-10 grid grid-cols-3 gap-6">
+        {papers.map((p) => (
+          <div key={p._id} className="bg-white p-4 shadow rounded">
+            <h3 className="font-bold">{p.title}</h3>
+            <p>{p.domain}</p>
+            <p>{p.readingStage}</p>
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 
